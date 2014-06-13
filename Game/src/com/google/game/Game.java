@@ -3,6 +3,7 @@ package com.google.game;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
@@ -10,11 +11,23 @@ import java.awt.image.DataBufferInt;
 
 import javax.swing.JFrame;
 
+import com.google.game.entity.mob.Player;
 import com.google.game.event.KeyboardEvent;
 import com.google.game.gfx.Render;
+import com.google.game.level.Level;
+import com.google.game.level.RandomLevel;
+import com.google.game.level.SpawnLevel;
 
 // Sorry for using your domain name, Google
-// If you're reading this then you're either: a) me b) a fellow developer or c) some bad-ass hacker
+// If you're reading this then you're either: a) me b) a fellow developer or c) some bad-ass hacker...
+// Or you're looking at the Github page :3
+//SPECIAL THANKS GO TO:
+//TheCherno for providing the tutorials I used to make this game
+//
+// TODO: character and player system
+// TODO: multiplayer
+// TODO: item and inventory system
+// TODO: find more people to help develop the game so I'm not so lonely :(
 public class Game extends Canvas implements Runnable
 {
 	private static final long serialVersionUID = 1L;
@@ -25,6 +38,12 @@ public class Game extends Canvas implements Runnable
 
 	// Keyboard
 	private KeyboardEvent key;
+	
+	// Level
+	private Level level;
+	
+	// Player
+	private Player player;
 	
 	// Window
 	private JFrame frame;
@@ -37,8 +56,9 @@ public class Game extends Canvas implements Runnable
 	public static int width = 300;
 	public static int height = width / 16 * 9;
 	public static int scale = 3;
-	public boolean invOpen;
-	private boolean invOpenTog;
+	public boolean debug;
+	private boolean debugTog;
+	public boolean respawn = false;
 	
 	private boolean running = false;
 	
@@ -52,6 +72,12 @@ public class Game extends Canvas implements Runnable
 		key = new KeyboardEvent();
 		
 		addKeyListener(key);
+		
+		// Define the level
+		level = new SpawnLevel("/levels/devLevel.png");
+		
+		// Define the player
+		player = new Player(7 * 16, 12 * 16, key);
 	}
 	
 	// Thread stuffs
@@ -78,7 +104,7 @@ public class Game extends Canvas implements Runnable
 		}
 	}
 	
-	int x = 0, y = 0;
+	//int x = 0, y = 0;
 	
 	// Update/tick method
 	public void tick()
@@ -86,26 +112,38 @@ public class Game extends Canvas implements Runnable
 		// Checks for keys that are being pressed and moves the screen appropriately
 		key.updateKeys();
 		
-		if(key.up) y++;
-		if(key.down) y--;
-		if(key.left) x++;
-		if(key.right) x--;
-		
-		if(key.isKeyPressed(KeyboardEvent.invKey) && !invOpenTog)
+		if(key.isKeyPressed(KeyboardEvent.debugKey) && !debugTog)
 		{
-			print("inventory opened!");
-			invOpen = !invOpen;
-			invOpenTog = true;
-			return;
-		}else if(!key.isKeyPressed(KeyboardEvent.invKey) && invOpenTog)
+			debug = !debug;
+			debugTog = true;
+			
+			if(debug)
+			{
+				print("Debug mode ON");
+			}
+			
+		}else if(!key.isKeyPressed(KeyboardEvent.debugKey) && debugTog)
 		{
-			print("inventory closed");
-			invOpenTog = !invOpenTog;
-			return;
+			debugTog = !debugTog;
+			
+			if(!debug)
+			{
+				print("Debug mode OFF");
+			}
 		}
+		
+		// Debug commands
+		if(key.respawn && debug)
+		{
+			player.x = 16 * 7;
+			player.y = 16 * 12;
+		}
+		
+		// Updates the player and other entities
+		player.updateEntities();
 	}
 	
-	// Render method
+	// Render method... Everything here is what is rendered on the screen
 	// IN CHRONOLOGICAL ORDER!!
 	public void render()
 	{
@@ -118,7 +156,12 @@ public class Game extends Canvas implements Runnable
 		}
 		
 		render.clear();
-		render.render(x, y);
+		
+		int xScroll = player.x - render.width / 2;
+		int yScroll = player.y - render.height / 2;
+		
+		level.render(xScroll, yScroll, render);
+		player.render(render);
 		
 		// Copies pixel array from the Render class to the pixel array that is going to be rendered
 		for(int i = 0; i < pixels.length; i++)
@@ -129,6 +172,14 @@ public class Game extends Canvas implements Runnable
 		Graphics gfx = bufferstrat.getDrawGraphics();
 		// Do graphics here
 		gfx.drawImage(img, 0, 0, getWidth(), getHeight(), null);
+		
+		// Debug screen
+		if(debug)
+		{
+			gfx.setColor(Color.WHITE);
+			gfx.setFont(new Font("Consolas", 0, 30));
+			gfx.drawString("X: " + player.x + " Y: " + player.y, this.getWidth() - 880, this.getHeight() - 450);
+		}
 		
 		gfx.dispose(); // Disposes of the stored graphics that have already been processed
 		bufferstrat.show();

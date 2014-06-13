@@ -4,7 +4,7 @@ import java.util.Random;
 
 public class RandomLevel extends Level
 {
-	private final Random rand = new Random();
+	private static final Random rand = new Random();
 	
 	public RandomLevel(int width, int height)
 	{
@@ -17,7 +17,7 @@ public class RandomLevel extends Level
 		{
 			for(int x = 0; x < width; x++)
 			{
-				tiles[x + y * width] = rand.nextInt(4); // Gives a random tile ID
+				tilesInt[x + y * width] = rand.nextInt(4); // Gives a random tile ID
 			}
 		}
 	}
