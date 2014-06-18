@@ -20,6 +20,7 @@ public class Sprite
 	public static Sprite dirt = new Sprite(16, 2, 0, SpriteSheet.tiles);
 	public static Sprite planks = new Sprite(16, 5, 0, SpriteSheet.tiles);
 	public static Sprite solidgrass = new Sprite(16, 0, 0, SpriteSheet.tiles);
+	public static Sprite cobble = new Sprite(16, 6, 0, SpriteSheet.tiles);
 	
 	// Player sprites and animations
 	public static Sprite playerUp = new Sprite(16, 3, 14, SpriteSheet.tiles);

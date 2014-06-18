@@ -74,7 +74,8 @@ public class Level
 		if(tiles[x + y * width] == 0xFFFFD800) return Tile.flowers;
 		if(tiles[x + y * width] == 0xFF7C5840) return Tile.dirt;
 		if(tiles[x + y * width] == 0xFF542100) return Tile.planks;
-		//if(tiles[x + y * width] == 3) return Tile.house0_0;
+		if(tiles[x + y * width] == 0xFF808080) return Tile.cobble;
+		if(tiles[x + y * width] == 0xFFAEFFFF) return Tile.house0_0;
 		return Tile.grass;
 	}
 	

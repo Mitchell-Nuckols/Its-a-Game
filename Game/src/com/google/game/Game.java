@@ -15,6 +15,7 @@ import com.google.game.entity.mob.Player;
 import com.google.game.event.KeyboardEvent;
 import com.google.game.gfx.Render;
 import com.google.game.level.Level;
+import com.google.game.level.LevelLoad;
 import com.google.game.level.RandomLevel;
 import com.google.game.level.SpawnLevel;
 
@@ -35,12 +36,16 @@ public class Game extends Canvas implements Runnable
 	// Version number (change if edit is made that will be in next release) & title
 	public static String version = "alpha (no release)";
 	public static String title = "Game";
+	public static String notes = "I'm going back to basics for now...";
+	public static String devStage = "Development paused";
 
 	// Keyboard
 	private KeyboardEvent key;
 	
 	// Level
 	private Level level;
+	public static String levelLoc = "/levels/devLevel.png";
+	private LevelLoad rand;
 	
 	// Player
 	private Player player;
@@ -74,7 +79,9 @@ public class Game extends Canvas implements Runnable
 		addKeyListener(key);
 		
 		// Define the level
-		level = new SpawnLevel("/levels/devLevel.png");
+		rand = new LevelLoad();
+		
+		level = new SpawnLevel(levelLoc);
 		
 		// Define the player
 		player = new Player(7 * 16, 12 * 16, key);
@@ -139,6 +146,12 @@ public class Game extends Canvas implements Runnable
 			player.y = 16 * 12;
 		}
 		
+		if(key.mapSwap && debug)
+		{
+			levelLoc = "/levels/houseBase.png";
+			
+		}
+		
 		// Updates the player and other entities
 		player.updateEntities();
 	}
@@ -179,6 +192,10 @@ public class Game extends Canvas implements Runnable
 			gfx.setColor(Color.WHITE);
 			gfx.setFont(new Font("Consolas", 0, 30));
 			gfx.drawString("X: " + player.x + " Y: " + player.y, this.getWidth() - 880, this.getHeight() - 450);
+			
+			gfx.setFont(new Font("Consolas", 0, 10));
+			gfx.drawString(notes,this.getWidth() - 880 , this.getHeight() - 420);
+			gfx.drawString(devStage,this.getWidth() - 880 , this.getHeight() - 390);
 		}
 		
 		gfx.dispose(); // Disposes of the stored graphics that have already been processed

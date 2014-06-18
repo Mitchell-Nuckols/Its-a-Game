@@ -5,7 +5,7 @@ import java.awt.event.*;
 public class KeyboardEvent implements KeyListener
 {
 	private boolean[] keys = new boolean[120];
-	public boolean up, down, left, right, respawn;
+	public boolean up, down, left, right, respawn, mapSwap;
 	public static final int debugKey = KeyEvent.VK_F1;
 	
 	public void updateKeys()
@@ -16,6 +16,7 @@ public class KeyboardEvent implements KeyListener
 		right = keys[KeyEvent.VK_D];
 		
 		respawn = keys[KeyEvent.VK_B];
+		mapSwap = keys[KeyEvent.VK_M];
 	}
 	
 	public void keyPressed(KeyEvent e)
