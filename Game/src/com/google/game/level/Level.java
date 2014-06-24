@@ -75,7 +75,18 @@ public class Level
 		if(tiles[x + y * width] == 0xFF7C5840) return Tile.dirt;
 		if(tiles[x + y * width] == 0xFF542100) return Tile.planks;
 		if(tiles[x + y * width] == 0xFF808080) return Tile.cobble;
-		if(tiles[x + y * width] == 0xFFAEFFFF) return Tile.house0_0;
+		if(tiles[x + y * width] == 0xFFE0E0E0) return Tile.stonePathway;
+		if(tiles[x + y * width] == 0xFF7C5236) return Tile.elevatedGround;
+		if(tiles[x + y * width] == 0xFF824C28) return Tile.elevatedGround_Below;
+		if(tiles[x + y * width] == 0xFF919191) return Tile.stoneStairs;
+		
+		if(tiles[x + y * width] == 0xFF05278E) return Tile.water;
+		
+		if(tiles[x + y * width] == 0xFFAFAFAF) return Tile.fountain_0;
+		if(tiles[x + y * width] == 0xFFA0A0A0) return Tile.fountain_1;
+		if(tiles[x + y * width] == 0xFF7A7A7A) return Tile.fountain_2;
+		if(tiles[x + y * width] == 0xFFCECECE) return Tile.fountain_3;
+		
 		return Tile.grass;
 	}
 	

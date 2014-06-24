@@ -15,6 +15,7 @@ public class Render
 	public final int mapSizeMask = mapSize-1;
 	public int[] tiles = new int[mapSize * mapSize];
 	private Random rand = new Random();
+	private SpriteSheet sheet;
 	
 	// Constructor
 	public Render(int width, int height)
@@ -62,22 +63,22 @@ public class Render
 	}
 	
 	// Renders an object multiple sprites long
-	public void renderInChunks(int xpx, int ypx, Sprite sprite)
+	public void renderAnim(int xpx, int ypx, Sprite sprite)
 	{
 		xpx -= xOffset;
 		ypx -= yOffset;
 		
-		for(int y = 0; y < 32; y++)
+		for(int y = 0; y < 16; y++)
 		{
 			int ya = y + ypx;
 			
-			for(int x = 0; x < 32; x++)
+			for(int x = 0; x < 16; x++)
 			{
 				int xa = x + xpx;				
-				if(xa < -32 || xa >= width || ya < 0 || ya >= height) break; // Stops rendering tiles if they are not on the screen
+				if(xa < -16 || xa >= width || ya < 0 || ya >= height) break; // Stops rendering tiles if they are not on the screen
 				if(xa < 0) xa = 0;
 				
-				int color = sprite.pixels[x + y * 32];
+				int color = sprite.pixels[x + y * 16];
 				if(color != 0xFFFF00DC)
 				{
 					pixels[xa + ya * width] = sprite.pixels[x + y * sprite.size];
@@ -106,6 +107,22 @@ public class Render
 				if(color != 0xFFFF00DC)
 				{
 					pixels[xa + ya * width] = sprite.pixels[x + y * sprite.size];
+				}
+			}
+		}
+	}
+	
+	public void renderElements(int xpx, int ypx, Sprite sprite)
+	{
+		for(int y = 0; y < sheet.w; y++)
+		{
+			for(int x = 0; x < sheet.h; x++)
+			{
+				int color = sprite.gui[x * y];
+				
+				if(color != 0xFFFF00DC)
+				{
+					pixels[x * y] = sprite.gui[x * y];
 				}
 			}
 		}

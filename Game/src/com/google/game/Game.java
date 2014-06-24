@@ -5,12 +5,17 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
+import java.io.File;
+import java.net.URISyntaxException;
 
+import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 
+import com.google.game.entity.mob.Mob;
 import com.google.game.entity.mob.Player;
 import com.google.game.event.KeyboardEvent;
 import com.google.game.gfx.Render;
@@ -18,6 +23,7 @@ import com.google.game.level.Level;
 import com.google.game.level.LevelLoad;
 import com.google.game.level.RandomLevel;
 import com.google.game.level.SpawnLevel;
+import com.google.game.level.TileCoordinate;
 
 // Sorry for using your domain name, Google
 // If you're reading this then you're either: a) me b) a fellow developer or c) some bad-ass hacker...
@@ -36,26 +42,28 @@ public class Game extends Canvas implements Runnable
 	// Version number (change if edit is made that will be in next release) & title
 	public static String version = "alpha (no release)";
 	public static String title = "Game";
-	public static String notes = "I'm going back to basics for now...";
-	public static String devStage = "Development paused";
+	public static String notes = "Adding in new systems...";
+	public static String devStage = "Development active";
 
 	// Keyboard
 	private KeyboardEvent key;
-	
 	// Level
 	private Level level;
-	public static String levelLoc = "/levels/devLevel.png";
+	public static String levelLoc = "/levels/homeVillage.png";
 	private LevelLoad rand;
 	
 	// Player
 	private Player player;
+	private Mob mob;
 	
 	// Window
 	private JFrame frame;
 	private BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB); // Creates image
 	private int[] pixels = ((DataBufferInt)img.getRaster().getDataBuffer()).getData(); // Allows access to the image
 	private Render render;
-	// Define: Raster - rectangular array of pixels
+	
+	private BufferedImage gui;
+	private int[] guiPixels = ((DataBufferInt)img.getRaster().getDataBuffer()).getData();
 	
 	// Variables
 	public static int width = 300;
@@ -84,7 +92,18 @@ public class Game extends Canvas implements Runnable
 		level = new SpawnLevel(levelLoc);
 		
 		// Define the player
-		player = new Player(7 * 16, 12 * 16, key);
+		TileCoordinate playerSpawn = new TileCoordinate(7, 12);
+		
+		player = new Player(playerSpawn.x(), playerSpawn.y(), key);
+		player.init(level);
+		
+		try
+		{
+			gui = ImageIO.read(new File(getClass().getResource("/textures/gui/gui.png").toURI()));
+		}catch(Exception e)
+		{
+			e.printStackTrace();
+		}
 	}
 	
 	// Thread stuffs
@@ -182,9 +201,20 @@ public class Game extends Canvas implements Runnable
 			pixels[i] = render.pixels[i];
 		}
 		
+		for(int i = 0; i < pixels.length; i++)
+		{
+			pixels[i] = render.pixels[i];
+		}
+		
 		Graphics gfx = bufferstrat.getDrawGraphics();
 		// Do graphics here
+		
+		
 		gfx.drawImage(img, 0, 0, getWidth(), getHeight(), null);
+		//gfx.drawImage(gui, 0, 0, getWidth(), getHeight(), null);
+		
+		//gfx.setColor(Color.BLUE);
+		//gfx.fillRect(0, 0, width * scale, height * scale);
 		
 		// Debug screen
 		if(debug)
@@ -193,9 +223,10 @@ public class Game extends Canvas implements Runnable
 			gfx.setFont(new Font("Consolas", 0, 30));
 			gfx.drawString("X: " + player.x + " Y: " + player.y, this.getWidth() - 880, this.getHeight() - 450);
 			
-			gfx.setFont(new Font("Consolas", 0, 10));
-			gfx.drawString(notes,this.getWidth() - 880 , this.getHeight() - 420);
-			gfx.drawString(devStage,this.getWidth() - 880 , this.getHeight() - 390);
+			gfx.setFont(new Font("Consolas", 0, 20));
+			gfx.drawString("Stamina: " + player.stamina, this.getWidth() - 880, this.getHeight() - 420);
+			gfx.drawString(notes,this.getWidth() - 880 , this.getHeight() - 390);
+			gfx.drawString(devStage,this.getWidth() - 880 , this.getHeight() - 360);
 		}
 		
 		gfx.dispose(); // Disposes of the stored graphics that have already been processed

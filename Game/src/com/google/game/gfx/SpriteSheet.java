@@ -10,18 +10,37 @@ public class SpriteSheet
 	private final String basePath = "/textures/";
 	private String spritePath;
 	public final int size;
+	public int w, h, width, height;
 	public int[] pixels;
 	
 	public static SpriteSheet tiles = new SpriteSheet("/textures/Sheet.png", 256);
+	//public static SpriteSheet gui = new SpriteSheet("/textures/gui/gui.png", 256);
+	
+	// Most complicated file tree EVAR!!
+	//public static SpriteSheet devLevel_textures = new SpriteSheet("/assets/devLevel/textures/devLevel_textures.png", 64);
 	
 	public SpriteSheet(String path, int size)
 	{
+		this.w = size;
+		this.h = size;
+		
 		this.spritePath = path;
 		this.size = size;
 		pixels = new int[this.size * this.size];
 		
 		loadImg();
 	}
+	
+	/*public SpriteSheet(String path, int width, int height)
+	{
+		this.spritePath = path;
+		this.width = width;
+		this.height = height;
+		this.size = this.width * this.height;
+		pixels = new int[this.size];
+		
+		loadImg();
+	}*/
 	
 	private void loadImg()
 	{
